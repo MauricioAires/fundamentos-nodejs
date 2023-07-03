@@ -103,6 +103,12 @@ app.get("/statement", verifyIfExistsAccountCPF, (req, res) => {
   return res.json(customer.statement);
 });
 
+app.get("/balance", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
+
+  return res.json(getBalance(customer.statement));
+});
+
 app.get("/statement/date", verifyIfExistsAccountCPF, (req, res) => {
   const { customer } = req;
   const { date } = req.query;
@@ -172,6 +178,15 @@ app.get("/account", verifyIfExistsAccountCPF, (req, res) => {
   const { customer } = req;
 
   return res.json(customer);
+});
+
+app.delete("/account", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
+
+  // splice
+  customers.splice(customer, 1);
+
+  return res.status(200).json(customers);
 });
 
 app.listen(3333, () => console.log("server listening on 3333"));
