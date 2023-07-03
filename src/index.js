@@ -36,7 +36,7 @@ app.use(express.json());
 
 const customers = [];
 
-// Middlware
+// Middleware
 
 function verifyIfExistsAccountCPF(req, res, next) {
   const { cpf } = req.headers;
@@ -157,6 +157,21 @@ app.post("/withdraw", verifyIfExistsAccountCPF, (req, res) => {
   customer.statement.push(statementOperation);
 
   return res.status(201).send();
+});
+
+app.put("/account", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
+  const { name } = req.body;
+
+  customer.name = name;
+
+  return res.status(201).send();
+});
+
+app.get("/account", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
+
+  return res.json(customer);
 });
 
 app.listen(3333, () => console.log("server listening on 3333"));
