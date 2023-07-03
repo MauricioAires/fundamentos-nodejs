@@ -103,6 +103,23 @@ app.get("/statement", verifyIfExistsAccountCPF, (req, res) => {
   return res.json(customer.statement);
 });
 
+app.get("/statement/date", verifyIfExistsAccountCPF, (req, res) => {
+  const { customer } = req;
+  const { date } = req.query;
+
+  const dateFormat = new Date(date + " 00:00");
+
+  const statement = customer.statement.filter((statement) => {
+    // console.log(new Date(statement.created_at).toDateString());
+    return (
+      new Date(statement.created_at).toDateString() ==
+      new Date(dateFormat).toDateString()
+    );
+  });
+
+  return res.json(statement);
+});
+
 app.post("/deposit", verifyIfExistsAccountCPF, (req, res) => {
   const { customer } = req;
   const { description, amount } = req.body;
@@ -110,7 +127,7 @@ app.post("/deposit", verifyIfExistsAccountCPF, (req, res) => {
   const statementOperation = {
     description,
     amount,
-    create_at: new Date(),
+    created_at: new Date(),
     type: "credit",
   };
 
@@ -133,7 +150,7 @@ app.post("/withdraw", verifyIfExistsAccountCPF, (req, res) => {
 
   const statementOperation = {
     amount,
-    create_at: new Date(),
+    created_at: new Date(),
     type: "debit",
   };
 
